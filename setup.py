@@ -8,6 +8,7 @@ setup(
         'pubmed_sdk',
         'xmltodict',
         'pandas',
-        'reportlab'
+        'reportlab',
+        'openpyxl'
     ],
 )
