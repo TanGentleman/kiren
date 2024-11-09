@@ -41,6 +41,37 @@ class ArticleParser:
         
         return ' '.join(sections)
 
+    @staticmethod
+    def _parse_formatted_text(text_data: dict | str) -> str:
+        """Parse text with formatting elements (italics, bold, etc) into plain text.
+        
+        Args:
+            text_data: Either a string or a dict containing formatted text elements
+                      like {'i': 'Candida auris', '#text': ' cluster in a hospital'}
+                      
+        Returns:
+            A plain text string with formatting elements merged naturally
+        """
+        if isinstance(text_data, str):
+            return text_data
+        if not isinstance(text_data, dict):
+            return str(text_data)
+        
+        main_text = text_data.get('#text', '')
+        
+        # Handle formatted text tags
+        for tag in ['i', 'b', 'sup', 'sub']:
+            if tag in text_data:
+                formatted_text = text_data[tag]
+                # Insert formatted text at start if main text starts with space
+                # Otherwise append space between formatted and main text
+                if main_text.startswith(' '):
+                    main_text = formatted_text + main_text
+                else:
+                    main_text = formatted_text + ' ' + main_text
+                    
+        return main_text.strip()
+
     @classmethod
     def parse_article_details(cls, detail: dict, convert_date: bool = False) -> Optional[ArticleDetails]:
         """Parse a single article's details into a clean dictionary."""
@@ -54,8 +85,11 @@ class ArticleParser:
         if convert_date:
             pub_date = convert_publication_date(pub_date)
             
+        title = article.get('ArticleTitle', '')
+        title = cls._parse_formatted_text(title)
+            
         return {
-            'title': article.get('ArticleTitle', ''),
+            'title': title,
             'abstract': cls.parse_abstract(article.get('Abstract', {})),
             'authors': cls.parse_authors(article.get('AuthorList', {})),
             'publication_date': pub_date,
