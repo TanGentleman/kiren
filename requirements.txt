@@ -2,3 +2,4 @@ pubmed_sdk
 xmltodict
 pandas
 reportlab
+openpyxl
