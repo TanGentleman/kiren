@@ -1,8 +1,9 @@
 from typing import TypedDict, List, Union
 
+
 class ArticleDetails(TypedDict):
     """Schema for parsed article details.
-    
+
     Fields:
         title: Article title as string
         abstract: Full abstract text as string
@@ -15,4 +16,4 @@ class ArticleDetails(TypedDict):
     abstract: str
     authors: List[str]
     publication_date: Union[str, dict]
-    pmid: str 
+    pmid: str

@@ -1,6 +1,7 @@
 import pytest
 from typing import List, Dict, Any
 
+
 @pytest.fixture
 def sample_pubmed_response() -> Dict[str, Any]:
     return {
@@ -10,6 +11,7 @@ def sample_pubmed_response() -> Dict[str, Any]:
         "warning": "",
         "query_translation": "test[All Fields]"
     }
+
 
 @pytest.fixture
 def sample_article_details() -> List[Dict[str, Any]]:
@@ -37,4 +39,4 @@ def sample_article_details() -> List[Dict[str, Any]]:
                 }
             }
         }
-    ] 
+    ]
