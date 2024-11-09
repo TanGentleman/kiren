@@ -1,5 +1,5 @@
 import pytest
-from pubmed_sdk.parsers.article import ArticleParser
+from pubmed_tools.parsers.article import ArticleParser
 
 @pytest.fixture
 def parser():

@@ -1,4 +1,4 @@
-from pubmed_sdk import PubMed
+from pubmed_tools import PubMed
 from typing import TypedDict, List, Union
 
 DEFAULT_CONVERT_DATE = False

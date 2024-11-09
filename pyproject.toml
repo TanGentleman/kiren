@@ -1,4 +1,4 @@
 [tool.pytest.ini_options]
-testpaths = ["pubmed_sdk/tests"]
+testpaths = ["pubmed_tools/tests"]
 python_files = ["test_*.py"]
-addopts = "--cov=pubmed_sdk --cov-report=term-missing" 
+addopts = "--cov=pubmed_tools --cov-report=term-missing" 

@@ -1,7 +1,7 @@
 import argparse
 from helpers import fetch_details, parse_all_details, print_articles
 from loaders import save_to_csv, save_to_excel, save_to_pdf
-from pubmed_sdk import PubMed
+from pubmed_tools import PubMed
 
 DEFAULT_QUERY = "nutrition fasting"
 

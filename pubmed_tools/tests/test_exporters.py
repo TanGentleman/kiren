@@ -1,9 +1,9 @@
 import pytest
 import os
 import pandas as pd
-from pubmed_sdk.exporters.csv_exporter import CSVExporter
-from pubmed_sdk.exporters.excel_exporter import ExcelExporter
-from pubmed_sdk.exporters.pdf_exporter import PDFExporter
+from pubmed_tools.exporters.csv_exporter import CSVExporter
+from pubmed_tools.exporters.excel_exporter import ExcelExporter
+from pubmed_tools.exporters.pdf_exporter import PDFExporter
 
 @pytest.fixture
 def sample_data():

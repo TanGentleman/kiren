@@ -1,3 +1,5 @@
+from pubmed_sdk import PubMed
+
 class PubMed:
     """Base PubMed client class."""
     

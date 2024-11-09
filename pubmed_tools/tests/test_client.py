@@ -1,10 +1,10 @@
 import pytest
 from unittest.mock import Mock, patch
-from pubmed_sdk.core.client import PubMedClient
+from pubmed_tools.core.client import PubMedClient
 
 @pytest.fixture
 def mock_pubmed():
-    with patch('pubmed_sdk.core.client.PubMed') as mock:
+    with patch('pubmed_tools.core.client.PubMed') as mock:
         yield mock
 
 @pytest.fixture

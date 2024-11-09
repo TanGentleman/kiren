@@ -1,8 +1,8 @@
-from pubmed_sdk.core.client import PubMedClient
-from pubmed_sdk.parsers.article import ArticleParser
-from pubmed_sdk.exporters.csv_exporter import CSVExporter
-from pubmed_sdk.exporters.excel_exporter import ExcelExporter
-from pubmed_sdk.exporters.pdf_exporter import PDFExporter
+from pubmed_tools.core.client import PubMedClient
+from pubmed_tools.parsers.article import ArticleParser
+from pubmed_tools.exporters.csv_exporter import CSVExporter
+from pubmed_tools.exporters.excel_exporter import ExcelExporter
+from pubmed_tools.exporters.pdf_exporter import PDFExporter
 
 def main(query: str = "nutrition fasting"):
     # Initialize components
