@@ -1,6 +1,0 @@
-Metadata-Version: 2.1
-Name: pubmed_tools
-Version: 0.1
-Requires-Dist: xmltodict
-Requires-Dist: pandas
-Requires-Dist: reportlab
