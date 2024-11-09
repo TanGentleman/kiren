@@ -1,5 +1,5 @@
 from typing import List, Dict, Any
-from .pubmed import PubMed
+from pubmed_sdk import PubMed
 
 class PubMedClient:
     def __init__(self):

@@ -1,5 +1,5 @@
 import argparse
-from helpers import fetch_details, parse_all_details, print_articles
+from helpers import parse_all_details, print_articles
 from loaders import save_to_csv, save_to_excel, save_to_pdf
 from pubmed_tools import PubMed
 
@@ -23,12 +23,11 @@ def main(query: str = DEFAULT_QUERY):
     return parsed_articles
 
 def get_parsed_articles(query: str = DEFAULT_QUERY):
-    wrapper = PubMed()
-    results = wrapper.search(query)
+    pubmed = PubMed()
+    results = pubmed.search(query)
     id_list = results["id_list"]
-    details = fetch_details(id_list, wrapper)
+    details = pubmed.fetch_details(id_list)
     parsed_articles = parse_all_details(details)
-
     return parsed_articles
 
 def open_files():
@@ -39,6 +38,5 @@ def open_files():
 
 if __name__ == "__main__":
     args = parse_args()
-    # Join multiple words into a single query string
     query = ' '.join(args.query)
     main(query)

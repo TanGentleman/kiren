@@ -20,7 +20,7 @@ def main(query: str = "nutrition fasting"):
     # Export to different formats
     exporters = {
         'csv': CSVExporter(),
-        'excel': ExcelExporter(),
+        'xlsx': ExcelExporter(), # Excel
         'pdf': PDFExporter()
     }
     
