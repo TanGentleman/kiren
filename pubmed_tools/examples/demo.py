@@ -6,8 +6,26 @@ from pubmed_tools.parsers.article import ArticleParser
 from pubmed_tools.exporters.pdf_exporter import PDFExporter
 from pubmed_tools.exporters.csv_exporter import CSVExporter
 
-TRUNCATE_ARTICLE = False
-TRUNCATE_ARTICLE_COUNT = 2
+DEFAULT_QUERY = "longitudinal fasting"
+# Configuration settings
+CONFIG = {
+    'exporters': {
+        'pdf': {
+            'enabled': True,
+            'auto_open': True,
+            'exporter': PDFExporter(),
+        },
+        'csv': {
+            'enabled': True,
+            'auto_open': True,
+            'exporter': CSVExporter(),
+        },
+    },
+    'truncate_articles': {
+        'enabled': False,
+        'count': 2,
+    }
+}
 
 def open_file(filename: str) -> None:
     """Opens a file using the system's default application.
@@ -28,7 +46,7 @@ def open_file(filename: str) -> None:
             f"File must be one of {valid_formats}, got: {filename}")
     subprocess.Popen(f"open {filename}", shell=True)
 
-def main(query: str = "nutrition fasting") -> dict[str, str]:
+def main(query: str = DEFAULT_QUERY) -> dict[str, str]:
     # Initialize components
     client = PubMedClient()
     parser = ArticleParser()
@@ -40,35 +58,32 @@ def main(query: str = "nutrition fasting") -> dict[str, str]:
 
     # Parse articles
     parsed_articles = parser.parse_all_details(details)
-    if TRUNCATE_ARTICLE:
-        parsed_articles = parsed_articles[:TRUNCATE_ARTICLE_COUNT]
+    if CONFIG['truncate_articles']['enabled']:
+        parsed_articles = parsed_articles[:CONFIG['truncate_articles']['count']]
 
     # Export to different formats
-    exporters = {
-        'pdf': PDFExporter(),
-        'csv': CSVExporter(),
-    }
-
     exported_files = {}
-    for format_name, exporter in exporters.items():
-        filename = f"output.{format_name}"
-        exporter.export(parsed_articles, filename)
-        exported_files[format_name] = filename
-        print(f"Exported to {filename}")
+    for format_name, settings in CONFIG['exporters'].items():
+        if settings['enabled']:
+            filename = f"output.{format_name}"
+            settings['exporter'].export(parsed_articles, filename)
+            exported_files[format_name] = filename
+            print(f"Exported to {filename}")
 
     return exported_files
-
 
 if __name__ == "__main__":
     import argparse
     parser = argparse.ArgumentParser(
         description='Search and export PubMed articles')
-    parser.add_argument('query', nargs='?', default="nutrition fasting",
-                        help='Search query for PubMed')
+    parser.add_argument('query', nargs='?', default=DEFAULT_QUERY,
+                       help='Search query for PubMed')
     args = parser.parse_args()
     try:
         exported_files = main(args.query)
-        open_file(exported_files['pdf'])
-        open_file(exported_files['csv'])
+        # Only open files that are configured for auto-opening
+        for format_name, filepath in exported_files.items():
+            if CONFIG['exporters'][format_name]['auto_open']:
+                open_file(filepath)
     except Exception as e:
         print(f"Error! {e}")
