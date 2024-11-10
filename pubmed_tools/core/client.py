@@ -11,6 +11,21 @@ class PubMedClient:
         return self.client.search(query)
 
     def fetch_details(self, id_list: List[str]) -> List[dict]:
-        """Fetch article details for given IDs."""
+        """Fetch article details for given IDs.
+        
+        Args:
+            id_list: List of PubMed IDs to fetch details for
+            
+        Returns:
+            List of article details dictionaries. Returns empty list if no results found.
+        """
         details = self.client.fetch_details(id_list)
-        return details.get('PubmedArticle', [])
+        if not details:
+            return []
+            
+        articles = details.get('PubmedArticle', [])
+        # Handle case where single article is returned
+        if not isinstance(articles, list):
+            # NOTE: Should this raise an error instead?
+            return [articles]
+        return articles
