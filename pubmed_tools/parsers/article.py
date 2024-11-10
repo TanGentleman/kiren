@@ -64,7 +64,12 @@ class ArticleParser:
         # Handle formatted text tags
         for tag in ['i', 'b', 'sup', 'sub']:
             if tag in text_data:
-                formatted_text = text_data[tag]
+                if isinstance(text_data[tag], str):
+                    formatted_text = text_data[tag]
+                else:
+                    # NOTE: Weird case!
+                    print(f"Warning: {tag} is not a string: {text_data[tag]}")
+                    formatted_text = str(text_data[tag])
                 # Insert formatted text at start if main text starts with space
                 # Otherwise append space between formatted and main text
                 if main_text.startswith(' '):
