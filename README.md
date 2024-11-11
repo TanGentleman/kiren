@@ -30,8 +30,8 @@ python pubmed_tools/examples/basic_usage.py
 ```bash
 git clone https://github.com/TanGentleman/kiren.git
 cd kiren
-python3.11 -m venv .venv
+python3 -m venv .venv
 source .venv/bin/activate
 pip install -e .
-python pubmed_tools/examples/basic_usage.py
+python3 pubmed_tools/examples/basic_usage.py
 ```
