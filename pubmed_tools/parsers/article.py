@@ -45,15 +45,7 @@ class ArticleParser:
 
     @staticmethod
     def _parse_formatted_text(text_data: dict | str) -> str:
-        """Parse text with formatting elements (italics, bold, etc) into plain text.
-
-        Args:
-            text_data: Either a string or a dict containing formatted text elements
-                      like {'i': 'Candida auris', '#text': ' cluster in a hospital'}
-
-        Returns:
-            A plain text string with formatting elements merged naturally
-        """
+        """Parse text with formatting elements (italics, bold, etc) into plain text."""
         if isinstance(text_data, str):
             return text_data
         if not isinstance(text_data, dict):
@@ -64,12 +56,13 @@ class ArticleParser:
         # Handle formatted text tags
         for tag in ['i', 'b', 'sup', 'sub']:
             if tag in text_data:
-                if isinstance(text_data[tag], str):
-                    formatted_text = text_data[tag]
-                else:
-                    # NOTE: Weird case!
-                    print(f"Warning: {tag} is not a string: {text_data[tag]}")
-                    formatted_text = str(text_data[tag])
+                formatted_text = text_data[tag]
+                # Handle both string and list cases
+                if isinstance(formatted_text, list):
+                    formatted_text = ' '.join(str(item) for item in formatted_text)
+                elif not isinstance(formatted_text, str):
+                    formatted_text = str(formatted_text)
+                
                 # Insert formatted text at start if main text starts with space
                 # Otherwise append space between formatted and main text
                 if main_text.startswith(' '):
