@@ -6,6 +6,8 @@ from pubmed_tools.parsers.article import ArticleParser
 from pubmed_tools.exporters.pdf_exporter import PDFExporter
 from pubmed_tools.exporters.csv_exporter import CSVExporter
 
+from pubmed_tools.config import OUTPUT_DIR
+
 DEFAULT_QUERY = "longitudinal fasting"
 # Configuration settings
 CONFIG = {
@@ -16,7 +18,7 @@ CONFIG = {
             'exporter': PDFExporter(),
         },
         'csv': {
-            'enabled': True,
+            'enabled': False,
             'auto_open': True,
             'exporter': CSVExporter(),
         },
@@ -36,15 +38,16 @@ def open_file(filename: str) -> None:
     Note:
         This is platform-dependent and is only tested on macOS.
     """
-    if not os.path.exists(filename):
-        raise FileNotFoundError(f"File not found: {filename}")
+    filepath = os.path.join(OUTPUT_DIR, filename)
+    if not os.path.exists(filepath):
+        raise FileNotFoundError(f"File not found: {filepath}")
 
     valid_formats = ['.pdf', '.csv', '.xlsx']
     file_ext = os.path.splitext(filename.lower())[1]
     if file_ext not in valid_formats:
         raise ValueError(
             f"File must be one of {valid_formats}, got: {filename}")
-    subprocess.Popen(f"open {filename}", shell=True)
+    subprocess.Popen(f"open {filepath}", shell=True)
 
 def main(query: str = DEFAULT_QUERY) -> dict[str, str]:
     # Initialize components
@@ -65,7 +68,9 @@ def main(query: str = DEFAULT_QUERY) -> dict[str, str]:
     exported_files = {}
     for format_name, settings in CONFIG['exporters'].items():
         if settings['enabled']:
-            filename = f"output.{format_name}"
+            # Create filename with only valid characters
+            safe_query = '_'.join(query[:10].split())
+            filename = f"{safe_query}-output.{format_name}"
             settings['exporter'].export(parsed_articles, filename)
             exported_files[format_name] = filename
             print(f"Exported to {filename}")
