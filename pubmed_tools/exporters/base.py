@@ -1,8 +1,8 @@
 import os
 from abc import ABC, abstractmethod
 from typing import List, Optional
-from pubmed_tools.core.models import ArticleDetails
-from pubmed_tools.config import OUTPUT_DIR
+from ..core.models import ArticleDetails
+from ..config import OUTPUT_DIR
 
 
 class BaseExporter(ABC):
