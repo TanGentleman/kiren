@@ -28,13 +28,14 @@ class PubMedClient:
     def __init__(self):
         self.base_url = 'https://eutils.ncbi.nlm.nih.gov/entrez/eutils/'
 
-    def search(self, query: str, use_history: bool = False) -> Dict[str, Any]:
+    def search(self, query: str, use_history: bool = False, retmax: int = 100) -> Dict[str, Any]:
         """Search PubMed and return results.
         
         Args:
             query: The search query string
             use_history: If True, store results on NCBI server and return WebEnv and query_key
                          for subsequent operations
+            retmax: Maximum number of results to return
         
         Returns:
             Dictionary containing search results, including id_list and optionally WebEnv and query_key
@@ -44,7 +45,8 @@ class PubMedClient:
             'db': 'pubmed',
             'term': query,
             'usehistory': 'y' if use_history else 'n',
-            'retmode': 'xml'
+            'retmode': 'xml',
+            'retmax': retmax
         }
         response = requests.get(f"{self.base_url}{eutil}", params=params)
         response.raise_for_status()
