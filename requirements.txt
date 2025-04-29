@@ -1,5 +1,4 @@
-pubmed_sdk
+requests
 xmltodict
 pandas
 reportlab
-openpyxl
