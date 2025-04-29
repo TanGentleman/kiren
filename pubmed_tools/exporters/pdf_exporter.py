@@ -10,6 +10,7 @@ from reportlab.lib.fonts import addMapping
 from .base import BaseExporter
 from ..core.models import ArticleDetails
 from ..parsers.date import convert_publication_date
+from ..config import PDF_FONT_PATH
 
 logger = logging.getLogger(__name__)
 
@@ -22,7 +23,7 @@ class PDFExporter(BaseExporter):
 
     def _register_fonts(self) -> None:
         """Register a Unicode-compatible font for use in the PDF."""
-        pdfmetrics.registerFont(TTFont('DejaVuSans', 'DejaVuSans.ttf'))
+        pdfmetrics.registerFont(TTFont('DejaVuSans', PDF_FONT_PATH))
         addMapping('DejaVuSans', 0, 0, 'DejaVuSans')  # Can map Regular if needed
 
     def _initialize_styles(self) -> Dict[str, ParagraphStyle]:
