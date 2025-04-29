@@ -17,3 +17,11 @@ class ArticleDetails(TypedDict):
     authors: List[str]
     publication_date: Union[str, dict]
     pmid: str
+
+
+class SearchResult(TypedDict):
+    """Schema for PubMed search results."""
+    id_list: List[str]
+    count: str
+    webenv: str
+    query_key: str
