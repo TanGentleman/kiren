@@ -25,7 +25,7 @@ Example:
 
 import argparse
 import logging
-from typing import List
+from typing import List, Tuple
 
 from pubmed_tools.core.client import PubMedClient
 from pubmed_tools.parsers.article import ArticleParser
@@ -40,6 +40,22 @@ def setup_logging() -> None:
         level=logging.INFO,
         format='%(asctime)s - %(levelname)s - %(message)s'
     )
+
+
+def get_arg_parser() -> argparse.ArgumentParser:
+    """Create and return the argument parser."""
+    parser = argparse.ArgumentParser(
+        description='Search and export PubMed articles to various formats.'
+    )
+    parser.add_argument('query', nargs='?', default="nutrition fasting",
+                        help='Search query for PubMed (default: "nutrition fasting")')
+    parser.add_argument('--csv', action='store_true', help='Export results to CSV')
+    parser.add_argument('--xlsx', action='store_true', help='Export results to Excel (.xlsx)')
+    parser.add_argument('--pdf', action='store_true', help='Export results to PDF')
+    parser.add_argument('--all', action='store_true', help='Export results to all formats')
+    parser.add_argument('--max-results', type=int, default=100,
+                        help='Maximum number of articles to fetch (default: 100)')
+    return parser
 
 
 def main(
@@ -76,7 +92,7 @@ def main(
             logging.warning("No articles could be parsed.")
             return
 
-        exporters = []
+        exporters: List[Tuple[str, object]] = []
         if export_csv:
             exporters.append(('csv', CSVExporter()))
         if export_xlsx:
@@ -95,26 +111,11 @@ def main(
         logging.error("An error occurred: %s", exc)
 
 
-def parse_args() -> argparse.Namespace:
-    """Parse command-line arguments."""
-    parser = argparse.ArgumentParser(
-        description='Search and export PubMed articles to various formats.'
-    )
-    parser.add_argument('query', nargs='?', default="nutrition fasting",
-                        help='Search query for PubMed (default: "nutrition fasting")')
-    parser.add_argument('--csv', action='store_true', help='Export results to CSV')
-    parser.add_argument('--xlsx', action='store_true', help='Export results to Excel (.xlsx)')
-    parser.add_argument('--pdf', action='store_true', help='Export results to PDF')
-    parser.add_argument('--all', action='store_true', help='Export results to all formats')
-    parser.add_argument('--max-results', type=int, default=100,
-                        help='Maximum number of articles to fetch (default: 100)')
-    return parser.parse_args()
-
-
 def run() -> None:
     """Entry point for running as a script."""
     setup_logging()
-    args = parse_args()
+    parser = get_arg_parser()
+    args = parser.parse_args()
 
     export_csv = args.csv or args.all
     export_xlsx = args.xlsx or args.all
@@ -123,7 +124,7 @@ def run() -> None:
     if not (export_csv or export_xlsx or export_pdf):
         logging.error("At least one export format must be specified (use --csv, --xlsx, --pdf, or --all).")
         print()  # For argparse help formatting
-        parse_args().print_help()
+        parser.print_help()
         exit(1)
 
     main(args.query, export_csv, export_xlsx, export_pdf, args.max_results)
