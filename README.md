@@ -35,3 +35,10 @@ source .venv/bin/activate
 pip install -e .
 python3 pubmed_tools/examples/basic_usage.py
 ```
+
+## Running after setup
+```bash
+cd kiren
+source .venv/bin/activate
+python3 pubmed_tools/examples/basic_usage.py "Perceptual Organization AND cerebral trauma" --pdf --csv
+```
