@@ -2,3 +2,4 @@ requests
 xmltodict
 pandas
 reportlab
+pyalex
