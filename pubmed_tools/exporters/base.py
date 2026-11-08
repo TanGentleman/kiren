@@ -1,17 +1,16 @@
 import os
 from abc import ABC, abstractmethod
-from typing import List, Optional
-from ..core.models import ArticleDetails
+
 from ..config import OUTPUT_DIR
+from ..core.models import ArticleDetails
 from ..parsers.date import convert_publication_date
 
 
 class BaseExporter(ABC):
     @abstractmethod
-    def export(self,
-               data: List[ArticleDetails],
-               filename: str,
-               fields: Optional[List[str]] = None) -> None:
+    def export(
+        self, data: list[ArticleDetails], filename: str, fields: list[str] | None = None
+    ) -> None:
         """Export data to a file.
 
         Args:
@@ -21,9 +20,9 @@ class BaseExporter(ABC):
         """
         pass
 
-    def _validate_data(self,
-                      data: List[ArticleDetails],
-                      fields: Optional[List[str]] = None) -> List[str]:
+    def _validate_data(
+        self, data: list[ArticleDetails], fields: list[str] | None = None
+    ) -> list[str]:
         """Validate input data and return fields to export."""
         if not data:
             raise ValueError("Data cannot be empty")
@@ -38,15 +37,15 @@ class BaseExporter(ABC):
         return fields
 
     @staticmethod
-    def _flat_rows(data: List[ArticleDetails]) -> List[dict]:
+    def _flat_rows(data: list[ArticleDetails]) -> list[dict]:
         """Rows for tabular formats: authors joined with '; ', dates as text."""
         rows = []
         for item in data:
             row = dict(item)
-            if isinstance(row.get('authors'), list):
-                row['authors'] = '; '.join(row['authors'])
-            if 'publication_date' in row:
-                row['publication_date'] = convert_publication_date(row['publication_date'])
+            if isinstance(row.get("authors"), list):
+                row["authors"] = "; ".join(row["authors"])
+            if "publication_date" in row:
+                row["publication_date"] = convert_publication_date(row["publication_date"])
             rows.append(row)
         return rows
 

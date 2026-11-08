@@ -25,7 +25,6 @@ import argparse
 import logging
 import os
 import sys
-from typing import List, Optional, Tuple
 
 from pubmed_tools.config import OUTPUT_DIR
 from pubmed_tools.core.client import PubMedClient
@@ -37,27 +36,31 @@ from pubmed_tools.parsers.article import ArticleParser
 
 def setup_logging() -> None:
     """Configure logging for the script."""
-    logging.basicConfig(
-        level=logging.INFO,
-        format='%(asctime)s - %(levelname)s - %(message)s'
-    )
+    logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 
 
 def get_arg_parser() -> argparse.ArgumentParser:
     """Create and return the argument parser."""
     parser = argparse.ArgumentParser(
-        description='Search and export PubMed articles to various formats.'
+        description="Search and export PubMed articles to various formats."
     )
-    parser.add_argument('query', nargs='?', default="nutrition fasting",
-                        help='Search query for PubMed (default: "nutrition fasting")')
-    parser.add_argument('--csv', action='store_true', help='Export results to CSV')
-    parser.add_argument('--xlsx', action='store_true', help='Export results to Excel (.xlsx)')
-    parser.add_argument('--pdf', action='store_true', help='Export results to PDF')
-    parser.add_argument('--all', action='store_true', help='Export results to all formats')
-    parser.add_argument('--max-results', type=int, default=100,
-                        help='Maximum number of articles to fetch (default: 100)')
-    parser.add_argument('--out', default=OUTPUT_DIR,
-                        help='Output directory (default: ./outputs)')
+    parser.add_argument(
+        "query",
+        nargs="?",
+        default="nutrition fasting",
+        help='Search query for PubMed (default: "nutrition fasting")',
+    )
+    parser.add_argument("--csv", action="store_true", help="Export results to CSV")
+    parser.add_argument("--xlsx", action="store_true", help="Export results to Excel (.xlsx)")
+    parser.add_argument("--pdf", action="store_true", help="Export results to PDF")
+    parser.add_argument("--all", action="store_true", help="Export results to all formats")
+    parser.add_argument(
+        "--max-results",
+        type=int,
+        default=100,
+        help="Maximum number of articles to fetch (default: 100)",
+    )
+    parser.add_argument("--out", default=OUTPUT_DIR, help="Output directory (default: ./outputs)")
     return parser
 
 
@@ -80,7 +83,7 @@ def main(
     try:
         logging.info("Searching PubMed for: '%s' (max %d results)...", query, max_results)
         results = client.search(query, use_history=False, retmax=max_results)
-        id_list: List[str] = results.get("id_list", [])
+        id_list: list[str] = results.get("id_list", [])
         if not id_list:
             logging.warning("No articles found for this query.")
             return 0
@@ -94,13 +97,13 @@ def main(
         logging.warning("No articles could be parsed.")
         return 0
 
-    exporters: List[Tuple[str, object]] = []
+    exporters: list[tuple[str, object]] = []
     if export_csv:
-        exporters.append(('csv', CSVExporter()))
+        exporters.append(("csv", CSVExporter()))
     if export_xlsx:
-        exporters.append(('xlsx', ExcelExporter()))
+        exporters.append(("xlsx", ExcelExporter()))
     if export_pdf:
-        exporters.append(('pdf', PDFExporter()))
+        exporters.append(("pdf", PDFExporter()))
 
     status = 0
     for format_name, exporter in exporters:
@@ -114,7 +117,7 @@ def main(
     return status
 
 
-def run(argv: Optional[List[str]] = None) -> None:
+def run(argv: list[str] | None = None) -> None:
     """Entry point for the `kiren` command."""
     setup_logging()
     parser = get_arg_parser()

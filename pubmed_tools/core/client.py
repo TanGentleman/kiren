@@ -19,8 +19,9 @@ Example:
     articles = ArticleParser.parse_all_details(articles_raw)
 """
 
-from typing import List, Dict, Any, Optional
 import xml.etree.ElementTree as ET
+from typing import Any
+
 import requests
 import xmltodict
 
@@ -28,7 +29,7 @@ TIMEOUT_SECONDS = 30
 
 # Elements whose inline markup (<i>, <sup>, MathML, ...) is flattened to plain text.
 # xmltodict would otherwise split the text from the tags and lose the word order.
-TEXT_ELEMENTS = ('ArticleTitle', 'VernacularTitle', 'AbstractText')
+TEXT_ELEMENTS = ("ArticleTitle", "VernacularTitle", "AbstractText")
 
 
 def flatten_inline_markup(content: bytes) -> bytes:
@@ -37,117 +38,115 @@ def flatten_inline_markup(content: bytes) -> bytes:
     for tag in TEXT_ELEMENTS:
         for element in root.iter(tag):
             if len(element):
-                text = ''.join(element.itertext())
+                text = "".join(element.itertext())
                 for child in list(element):
                     element.remove(child)
                 element.text = text
-    return ET.tostring(root, encoding='utf-8')
+    return ET.tostring(root, encoding="utf-8")
 
 
 class PubMedClient:
     def __init__(self):
-        self.base_url = 'https://eutils.ncbi.nlm.nih.gov/entrez/eutils/'
+        self.base_url = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/"
 
-    def search(self, query: str, use_history: bool = False, retmax: int = 100) -> Dict[str, Any]:
+    def search(self, query: str, use_history: bool = False, retmax: int = 100) -> dict[str, Any]:
         """Search PubMed and return results.
-        
+
         Args:
             query: The search query string
             use_history: If True, store results on NCBI server and return WebEnv and query_key
                          for subsequent operations
             retmax: Maximum number of results to return
-        
+
         Returns:
-            Dictionary containing search results, including id_list and optionally WebEnv and query_key
+            Dict with id_list, count, ret_max, ret_start, and webenv/query_key if use_history
         """
-        eutil = 'esearch.fcgi'
+        eutil = "esearch.fcgi"
         params = {
-            'db': 'pubmed',
-            'term': query,
-            'usehistory': 'y' if use_history else 'n',
-            'retmode': 'xml',
-            'retmax': retmax
+            "db": "pubmed",
+            "term": query,
+            "usehistory": "y" if use_history else "n",
+            "retmode": "xml",
+            "retmax": retmax,
         }
         response = requests.get(f"{self.base_url}{eutil}", params=params, timeout=TIMEOUT_SECONDS)
         response.raise_for_status()
         xml = xmltodict.parse(response.content)
-        result = xml.get('eSearchResult', {})
-        id_list = result.get('IdList', {}).get('Id', [])
+        result = xml.get("eSearchResult", {})
+        id_list = result.get("IdList", {}).get("Id", [])
         if isinstance(id_list, str):
             id_list = [id_list]
         elif not isinstance(id_list, list):
             id_list = []
         out = {
-            'count': result.get('Count', '0'),
-            'ret_max': result.get('RetMax', '0'),
-            'ret_start': result.get('RetStart', '0'),
-            'id_list': id_list,
+            "count": result.get("Count", "0"),
+            "ret_max": result.get("RetMax", "0"),
+            "ret_start": result.get("RetStart", "0"),
+            "id_list": id_list,
         }
-        if 'WebEnv' in result:
-            out['webenv'] = result['WebEnv']
-        if 'QueryKey' in result:
-            out['query_key'] = result['QueryKey']
+        if "WebEnv" in result:
+            out["webenv"] = result["WebEnv"]
+        if "QueryKey" in result:
+            out["query_key"] = result["QueryKey"]
         return out
 
-    def fetch_details(self, id_list: Optional[List[str]] = None, 
-                     webenv: Optional[str] = None, 
-                     query_key: Optional[str] = None,
-                     retmax: int = 100,
-                     retstart: int = 0) -> List[dict]:
+    def fetch_details(
+        self,
+        id_list: list[str] | None = None,
+        webenv: str | None = None,
+        query_key: str | None = None,
+        retmax: int = 100,
+        retstart: int = 0,
+    ) -> list[dict]:
         """Fetch article details for given IDs or from a previous search.
-        
+
         Args:
             id_list: List of PubMed IDs to fetch details for
             webenv: WebEnv string from a previous search
             query_key: Query key from a previous search
             retmax: Maximum number of records to retrieve
             retstart: Index of first record to retrieve
-            
+
         Returns:
             List of article details dictionaries. Returns empty list if no results found.
         """
         if not id_list and not (webenv and query_key):
             return []
-        eutil = 'efetch.fcgi'
-        params = {
-            'db': 'pubmed',
-            'retmode': 'xml',
-            'retmax': retmax,
-            'retstart': retstart
-        }
+        eutil = "efetch.fcgi"
+        params = {"db": "pubmed", "retmode": "xml", "retmax": retmax, "retstart": retstart}
         if id_list:
-            params['id'] = ','.join(str(i) for i in id_list)
+            params["id"] = ",".join(str(i) for i in id_list)
         else:
-            params['WebEnv'] = webenv
-            params['query_key'] = query_key
+            params["WebEnv"] = webenv
+            params["query_key"] = query_key
         response = requests.get(f"{self.base_url}{eutil}", params=params, timeout=TIMEOUT_SECONDS)
         response.raise_for_status()
         xml_dict = xmltodict.parse(flatten_inline_markup(response.content))
-        data = xml_dict.get('PubmedArticleSet', {})
-        articles = data.get('PubmedArticle', [])
+        data = xml_dict.get("PubmedArticleSet", {})
+        articles = data.get("PubmedArticle", [])
         if not articles:
             return []
         if not isinstance(articles, list):
             return [articles]
         return articles
 
-    def search_and_fetch(self, query: str, max_results: int = 100) -> List[dict]:
+    def search_and_fetch(self, query: str, max_results: int = 100) -> list[dict]:
         """Convenience method to search and fetch details in one operation.
-        
+
         Args:
             query: The search query string
             max_results: Maximum number of results to return
-            
+
         Returns:
             List of article details dictionaries
         """
         search_results = self.search(query, use_history=True)
-        if not search_results or int(search_results.get('count', 0)) == 0:
+        if not search_results or int(search_results.get("count", 0)) == 0:
             return []
-        webenv = search_results.get('webenv')
-        query_key = search_results.get('query_key')
+        webenv = search_results.get("webenv")
+        query_key = search_results.get("query_key")
         if not webenv or not query_key:
-            id_list = search_results.get('id_list', [])
+            id_list = search_results.get("id_list", [])
             if not id_list:
                 return []
             id_list = id_list[:max_results]

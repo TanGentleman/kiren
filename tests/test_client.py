@@ -1,14 +1,17 @@
 import os
+from unittest.mock import Mock, patch
 
 import pytest
 import requests
-from unittest.mock import patch, Mock
+
 from pubmed_tools.core.client import PubMedClient
 from pubmed_tools.parsers.article import ArticleParser
+
 
 @pytest.fixture
 def client():
     return PubMedClient()
+
 
 def _make_response(content: str, status_code: int = 200):
     mock_resp = Mock()
@@ -16,6 +19,7 @@ def _make_response(content: str, status_code: int = 200):
     mock_resp.status_code = status_code
     mock_resp.raise_for_status = Mock()
     return mock_resp
+
 
 def test_search(client):
     # Arrange
@@ -45,6 +49,7 @@ def test_search(client):
         args, kwargs = mock_get.call_args
         assert "esearch.fcgi" in args[0]
         assert kwargs["params"]["term"] == "test query"
+
 
 def test_fetch_details(client):
     # Arrange
@@ -101,8 +106,11 @@ def test_fetch_details_keeps_text_around_inline_markup(client):
         "Programs, a Component of Dengue Control."
     )
     assert first["abstract"].startswith(
-        "BACKGROUND: Drosophila melanogaster flies are smooth, low upkeep and safe")
-    assert "requirements were provided for laboratory rearing of D. melanogaster." in first["abstract"]
+        "BACKGROUND: Drosophila melanogaster flies are smooth, low upkeep and safe"
+    )
+    assert (
+        "requirements were provided for laboratory rearing of D. melanogaster." in first["abstract"]
+    )
 
 
 def test_fetch_details_raises_on_http_error(client):
