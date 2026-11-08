@@ -30,7 +30,7 @@ TIMEOUT_SECONDS = 30
 
 # Elements whose inline markup (<i>, <sup>, MathML, ...) is flattened to plain text.
 # xmltodict would otherwise split the text from the tags and lose the word order.
-TEXT_ELEMENTS = ("ArticleTitle", "VernacularTitle", "AbstractText")
+TEXT_ELEMENTS = ("ArticleTitle", "VernacularTitle", "AbstractText", "CollectiveName")
 
 
 def flatten_inline_markup(content: bytes) -> bytes:

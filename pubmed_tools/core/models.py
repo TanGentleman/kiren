@@ -18,12 +18,3 @@ class ArticleDetails(TypedDict):
     pmid: str
     authors: list[str]
     abstract: str
-
-
-class SearchResult(TypedDict):
-    """Schema for PubMed search results."""
-
-    id_list: list[str]
-    count: str
-    webenv: str
-    query_key: str

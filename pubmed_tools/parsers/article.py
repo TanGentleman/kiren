@@ -45,33 +45,11 @@ class ArticleParser:
         return " ".join(sections)
 
     @staticmethod
-    def _parse_formatted_text(text_data: dict | str) -> str:
-        """Parse text with formatting elements (italics, bold, etc) into plain text."""
-        if isinstance(text_data, str):
-            return text_data
-        if not isinstance(text_data, dict):
-            return str(text_data)
-
-        main_text = text_data.get("#text", "")
-
-        # Handle formatted text tags
-        for tag in ["i", "b", "sup", "sub"]:
-            if tag in text_data:
-                formatted_text = text_data[tag]
-                # Handle both string and list cases
-                if isinstance(formatted_text, list):
-                    formatted_text = " ".join(str(item) for item in formatted_text)
-                elif not isinstance(formatted_text, str):
-                    formatted_text = str(formatted_text)
-
-                # Insert formatted text at start if main text starts with space
-                # Otherwise append space between formatted and main text
-                if main_text.startswith(" "):
-                    main_text = formatted_text + main_text
-                else:
-                    main_text = formatted_text + " " + main_text
-
-        return main_text.strip()
+    def _parse_formatted_text(text_data: dict | str | None) -> str:
+        """Text of an element; the client already flattened inline markup."""
+        if isinstance(text_data, dict):
+            return str(text_data.get("#text", "")).strip()
+        return str(text_data or "").strip()
 
     @classmethod
     def parse_article_details(
