@@ -93,7 +93,9 @@ Each branch is based on the previous one.
   `<IdList/>`), and so did an efetch with no records. CI: ruff, pytest and
   `kiren --help` on Python 3.10-3.14 (`actions/checkout@v6`, `astral-sh/setup-uv@v10.3.3`;
   both refs checked with `gh api`). 39 tests pass locally on 3.10, 3.11, 3.12, 3.13, 3.14.
-- `kiren-4`: cut the noise listed above; README a stranger can follow.
+- `kiren-4` (done): cut both notebooks, `examples/demo.py`, `modal-abstracts.py`, the
+  unused `SearchResult` and the parser's dead inline-markup branch; new README. Its
+  shell and Python examples were run live against NCBI on 2026-11-08 (20 articles).
 - `kiren-5`: the OpenAlex DOI lookup moves into the package as `kiren doi <url>` (plain
   requests, no pyalex), tested against a fake OpenAlex server; the web page becomes an
   optional extra.
