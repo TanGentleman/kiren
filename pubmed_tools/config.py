@@ -1,14 +1,9 @@
 import os
 
-# Get the repository root directory
-REPO_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+PACKAGE_DIR = os.path.dirname(os.path.abspath(__file__))
 
-# Allow override via environment variable, defaulting to absolute path in project root
-OUTPUT_DIR = os.getenv('PUBMED_TOOLS_OUTPUT_DIR', 
-                      os.path.abspath(os.path.join(REPO_ROOT, 'outputs')))
+# Relative export filenames go here; override with PUBMED_TOOLS_OUTPUT_DIR or `kiren --out`.
+OUTPUT_DIR = os.getenv('PUBMED_TOOLS_OUTPUT_DIR', 'outputs')
 
-# Path to the DejaVuSans font file
-PDF_FONT_PATH = os.path.join(REPO_ROOT, 'pubmed_tools', 'fonts', 'DejaVuSans.ttf')
-
-# Ensure the output directory is created
-os.makedirs(OUTPUT_DIR, exist_ok=True)
+# Unicode font for PDF export (names and symbols outside Latin-1)
+PDF_FONT_PATH = os.path.join(PACKAGE_DIR, 'fonts', 'DejaVuSans.ttf')

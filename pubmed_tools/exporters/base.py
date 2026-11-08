@@ -51,7 +51,7 @@ class BaseExporter(ABC):
         return rows
 
     def _get_output_path(self, filename: str) -> str:
-        """Get the full output path for a filename."""
-        if os.path.isabs(filename):
-            return filename
-        return os.path.join(OUTPUT_DIR, filename)
+        """Full output path for a filename; relative names go under OUTPUT_DIR."""
+        path = filename if os.path.isabs(filename) else os.path.join(OUTPUT_DIR, filename)
+        os.makedirs(os.path.dirname(os.path.abspath(path)), exist_ok=True)
+        return path

@@ -1,11 +1,8 @@
 """
-Basic PubMed Tools Usage Example
-
-This script demonstrates how to search PubMed, parse articles, and export results
-in various formats (CSV, Excel, PDF).
+kiren: search PubMed and export the articles to CSV, Excel or PDF.
 
 Usage:
-    python basic_usage.py "search query" [--csv] [--xlsx] [--pdf] [--all] [--max-results N]
+    kiren "search query" [--csv] [--xlsx] [--pdf] [--all] [--max-results N] [--out DIR]
 
 Arguments:
     query           Search query for PubMed (default: "nutrition fasting")
@@ -18,20 +15,24 @@ Export options (at least one required):
 
 Other options:
     --max-results N Maximum number of articles to fetch (default: 100)
+    --out DIR       Directory for output.csv / output.xlsx / output.pdf (default: ./outputs)
 
 Example:
-    python basic_usage.py "cancer immunotherapy" --csv --pdf --max-results 50
+    kiren "cancer immunotherapy" --csv --pdf --max-results 50
 """
 
 import argparse
 import logging
-from typing import List, Tuple
+import os
+import sys
+from typing import List, Optional, Tuple
 
+from pubmed_tools.config import OUTPUT_DIR
 from pubmed_tools.core.client import PubMedClient
-from pubmed_tools.parsers.article import ArticleParser
 from pubmed_tools.exporters.csv_exporter import CSVExporter
 from pubmed_tools.exporters.excel_exporter import ExcelExporter
 from pubmed_tools.exporters.pdf_exporter import PDFExporter
+from pubmed_tools.parsers.article import ArticleParser
 
 
 def setup_logging() -> None:
@@ -55,6 +56,8 @@ def get_arg_parser() -> argparse.ArgumentParser:
     parser.add_argument('--all', action='store_true', help='Export results to all formats')
     parser.add_argument('--max-results', type=int, default=100,
                         help='Maximum number of articles to fetch (default: 100)')
+    parser.add_argument('--out', default=OUTPUT_DIR,
+                        help='Output directory (default: ./outputs)')
     return parser
 
 
@@ -63,71 +66,68 @@ def main(
     export_csv: bool,
     export_xlsx: bool,
     export_pdf: bool,
-    max_results: int
-) -> None:
+    max_results: int,
+    out_dir: str = OUTPUT_DIR,
+) -> int:
     """
     Search PubMed, parse articles, and export results in selected formats.
 
-    Args:
-        query (str): Search query for PubMed.
-        export_csv (bool): Whether to export results to CSV.
-        export_xlsx (bool): Whether to export results to Excel.
-        export_pdf (bool): Whether to export results to PDF.
-        max_results (int): Maximum number of articles to fetch.
+    Returns the process exit code: 0 on success or no results, 1 if anything failed.
     """
     client = PubMedClient()
     parser = ArticleParser()
 
     try:
-        logging.info(f"Searching PubMed for: '%s' (max %d results)...", query, max_results)
+        logging.info("Searching PubMed for: '%s' (max %d results)...", query, max_results)
         results = client.search(query, use_history=False, retmax=max_results)
         id_list: List[str] = results.get("id_list", [])
         if not id_list:
             logging.warning("No articles found for this query.")
-            return
+            return 0
         details = client.fetch_details(id_list=id_list)
-
-        parsed_articles = parser.parse_all_details(details)
-        if not parsed_articles:
-            logging.warning("No articles could be parsed.")
-            return
-
-        exporters: List[Tuple[str, object]] = []
-        if export_csv:
-            exporters.append(('csv', CSVExporter()))
-        if export_xlsx:
-            exporters.append(('xlsx', ExcelExporter()))
-        if export_pdf:
-            exporters.append(('pdf', PDFExporter()))
-
-        for format_name, exporter in exporters:
-            filename = f"output.{format_name}"
-            try:
-                exporter.export(parsed_articles, filename)
-                logging.info("Exported to %s", filename)
-            except Exception as e:
-                logging.error("Failed to export to %s: %s", filename, e)
     except Exception as exc:
-        logging.error("An error occurred: %s", exc)
+        logging.error("PubMed request failed: %s", exc)
+        return 1
+
+    parsed_articles = parser.parse_all_details(details)
+    if not parsed_articles:
+        logging.warning("No articles could be parsed.")
+        return 0
+
+    exporters: List[Tuple[str, object]] = []
+    if export_csv:
+        exporters.append(('csv', CSVExporter()))
+    if export_xlsx:
+        exporters.append(('xlsx', ExcelExporter()))
+    if export_pdf:
+        exporters.append(('pdf', PDFExporter()))
+
+    status = 0
+    for format_name, exporter in exporters:
+        path = os.path.abspath(os.path.join(out_dir, f"output.{format_name}"))
+        try:
+            exporter.export(parsed_articles, path)
+            logging.info("Exported %d articles to %s", len(parsed_articles), path)
+        except Exception as e:
+            logging.error("Failed to export to %s: %s", path, e)
+            status = 1
+    return status
 
 
-def run() -> None:
-    """Entry point for running as a script."""
+def run(argv: Optional[List[str]] = None) -> None:
+    """Entry point for the `kiren` command."""
     setup_logging()
     parser = get_arg_parser()
-    args = parser.parse_args()
+    args = parser.parse_args(argv)
 
     export_csv = args.csv or args.all
     export_xlsx = args.xlsx or args.all
     export_pdf = args.pdf or args.all
 
     if not (export_csv or export_xlsx or export_pdf):
-        logging.error("At least one export format must be specified (use --csv, --xlsx, --pdf, or --all).")
-        print()  # For argparse help formatting
-        parser.print_help()
-        exit(1)
+        parser.error("choose at least one export format: --csv, --xlsx, --pdf or --all")
 
-    main(args.query, export_csv, export_xlsx, export_pdf, args.max_results)
+    sys.exit(main(args.query, export_csv, export_xlsx, export_pdf, args.max_results, args.out))
 
 
 if __name__ == "__main__":

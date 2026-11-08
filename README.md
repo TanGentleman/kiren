@@ -23,22 +23,22 @@ pip install -e .
 
 ## Usage
 ```bash
-python pubmed_tools/examples/basic_usage.py
+kiren "nutrition fasting" --csv
 ```
 
-## All-in-one (Python 3.11)
+## All-in-one (Python 3.10+)
 ```bash
 git clone https://github.com/TanGentleman/kiren.git
 cd kiren
 python3 -m venv .venv
 source .venv/bin/activate
 pip install -e .
-python3 pubmed_tools/examples/basic_usage.py
+kiren "nutrition fasting" --csv
 ```
 
 ## Running after setup
 ```bash
 cd kiren
 source .venv/bin/activate
-python3 pubmed_tools/examples/basic_usage.py "Perceptual Organization AND cerebral trauma" --pdf --csv
+kiren "Perceptual Organization AND cerebral trauma" --pdf --csv
 ```
