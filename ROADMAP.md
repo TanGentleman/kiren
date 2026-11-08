@@ -84,9 +84,15 @@ Each branch is based on the previous one.
   `examples/basic_usage.py`, adds `--out DIR` (default `./outputs`, nothing created at
   import) and exits 1 when PubMed or an export fails. Tests move to `tests/`. `uv.lock`
   (pandas 2.3.3 on 3.10, 3.1.1 on 3.11+), ruff format and lint.
-- `kiren-3`: tests against a fake E-utilities HTTP server serving recorded XML;
-  `PubMedClient(base_url=..., api_key=..., email=...)` with `NCBI_API_KEY`/`NCBI_EMAIL`
-  from the environment; GitHub Actions on Python 3.10-3.14.
+- `kiren-3` (done): client and CLI tests go over real HTTP to a fake E-utilities
+  server (`tests/conftest.py`) that replays responses recorded from NCBI by
+  `tests/fixtures/record.sh` (re-run 2026-11-08: identical apart from the WebEnv id).
+  `PubMedClient(base_url, api_key, email, tool)` reads `KIREN_EUTILS_URL`,
+  `NCBI_API_KEY` and `NCBI_EMAIL`. The recorded no-results responses exposed two more
+  crashes, now fixed: any search with no hits raised `AttributeError` (NCBI sends
+  `<IdList/>`), and so did an efetch with no records. CI: ruff, pytest and
+  `kiren --help` on Python 3.10-3.14 (`actions/checkout@v6`, `astral-sh/setup-uv@v10.3.3`;
+  both refs checked with `gh api`). 39 tests pass locally on 3.10, 3.11, 3.12, 3.13, 3.14.
 - `kiren-4`: cut the noise listed above; README a stranger can follow.
 - `kiren-5`: the OpenAlex DOI lookup moves into the package as `kiren doi <url>` (plain
   requests, no pyalex), tested against a fake OpenAlex server; the web page becomes an
