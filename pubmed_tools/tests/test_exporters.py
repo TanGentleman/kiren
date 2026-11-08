@@ -93,3 +93,13 @@ class TestPDFExporter:
         assert os.path.exists(filename)
         # Basic file size check to ensure PDF was created
         assert os.path.getsize(filename) > 0
+
+
+def test_csv_and_excel_write_plain_text_cells(sample_data, temp_dir):
+    csv_path = os.path.join(temp_dir, 'flat.csv')
+    xlsx_path = os.path.join(temp_dir, 'flat.xlsx')
+    CSVExporter().export(sample_data, csv_path)
+    ExcelExporter().export(sample_data, xlsx_path)
+    for df in (pd.read_csv(csv_path, dtype=str), pd.read_excel(xlsx_path, dtype=str)):
+        assert df['authors'].tolist() == ['John Doe; Jane Smith', 'Bob Johnson']
+        assert df['publication_date'].tolist() == ['2023-01-01', '2023-02-02']

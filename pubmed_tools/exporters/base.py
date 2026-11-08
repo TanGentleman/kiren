@@ -3,6 +3,7 @@ from abc import ABC, abstractmethod
 from typing import List, Optional
 from ..core.models import ArticleDetails
 from ..config import OUTPUT_DIR
+from ..parsers.date import convert_publication_date
 
 
 class BaseExporter(ABC):
@@ -35,6 +36,19 @@ class BaseExporter(ABC):
             raise ValueError(f"Fields {missing} not found in data")
 
         return fields
+
+    @staticmethod
+    def _flat_rows(data: List[ArticleDetails]) -> List[dict]:
+        """Rows for tabular formats: authors joined with '; ', dates as text."""
+        rows = []
+        for item in data:
+            row = dict(item)
+            if isinstance(row.get('authors'), list):
+                row['authors'] = '; '.join(row['authors'])
+            if 'publication_date' in row:
+                row['publication_date'] = convert_publication_date(row['publication_date'])
+            rows.append(row)
+        return rows
 
     def _get_output_path(self, filename: str) -> str:
         """Get the full output path for a filename."""

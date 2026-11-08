@@ -13,9 +13,6 @@ class ExcelExporter(BaseExporter):
         fields = self._validate_data(data, fields)
         output_path = self._get_output_path(filename)
 
-        if fields:
-            df = pd.DataFrame(data)[fields]
-        else:
-            df = pd.DataFrame(data)
+        df = pd.DataFrame(self._flat_rows(data))[fields]
 
         df.to_excel(output_path, index=False)

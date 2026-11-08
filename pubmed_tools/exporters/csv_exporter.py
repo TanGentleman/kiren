@@ -16,4 +16,4 @@ class CSVExporter(BaseExporter):
             dict_writer = csv.DictWriter(
                 output_file, fieldnames=fields, extrasaction='ignore')
             dict_writer.writeheader()
-            dict_writer.writerows(data)
+            dict_writer.writerows(self._flat_rows(data))
