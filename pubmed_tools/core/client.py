@@ -20,8 +20,28 @@ Example:
 """
 
 from typing import List, Dict, Any, Optional
+import xml.etree.ElementTree as ET
 import requests
 import xmltodict
+
+TIMEOUT_SECONDS = 30
+
+# Elements whose inline markup (<i>, <sup>, MathML, ...) is flattened to plain text.
+# xmltodict would otherwise split the text from the tags and lose the word order.
+TEXT_ELEMENTS = ('ArticleTitle', 'VernacularTitle', 'AbstractText')
+
+
+def flatten_inline_markup(content: bytes) -> bytes:
+    """Replace child elements of text fields with their text, keeping attributes."""
+    root = ET.fromstring(content)
+    for tag in TEXT_ELEMENTS:
+        for element in root.iter(tag):
+            if len(element):
+                text = ''.join(element.itertext())
+                for child in list(element):
+                    element.remove(child)
+                element.text = text
+    return ET.tostring(root, encoding='utf-8')
 
 
 class PubMedClient:
@@ -48,7 +68,7 @@ class PubMedClient:
             'retmode': 'xml',
             'retmax': retmax
         }
-        response = requests.get(f"{self.base_url}{eutil}", params=params)
+        response = requests.get(f"{self.base_url}{eutil}", params=params, timeout=TIMEOUT_SECONDS)
         response.raise_for_status()
         xml = xmltodict.parse(response.content)
         result = xml.get('eSearchResult', {})
@@ -100,10 +120,9 @@ class PubMedClient:
         else:
             params['WebEnv'] = webenv
             params['query_key'] = query_key
-        response = requests.get(f"{self.base_url}{eutil}", params=params)
-        if response.status_code != 200:
-            return []
-        xml_dict = xmltodict.parse(response.content)
+        response = requests.get(f"{self.base_url}{eutil}", params=params, timeout=TIMEOUT_SECONDS)
+        response.raise_for_status()
+        xml_dict = xmltodict.parse(flatten_inline_markup(response.content))
         data = xml_dict.get('PubmedArticleSet', {})
         articles = data.get('PubmedArticle', [])
         if not articles:

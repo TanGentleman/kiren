@@ -1,6 +1,10 @@
+import os
+
 import pytest
+import requests
 from unittest.mock import patch, Mock
 from pubmed_tools.core.client import PubMedClient
+from pubmed_tools.parsers.article import ArticleParser
 
 @pytest.fixture
 def client():
@@ -77,3 +81,33 @@ def test_core_star_import():
     namespace = {}
     exec("from pubmed_tools.core import *", namespace)
     assert "PubMedClient" in namespace
+
+
+FIXTURES = os.path.join(os.path.dirname(__file__), "fixtures")
+
+
+def _fixture(name: str) -> str:
+    with open(os.path.join(FIXTURES, name), encoding="utf-8") as f:
+        return f.read()
+
+
+def test_fetch_details_keeps_text_around_inline_markup(client):
+    with patch("requests.get") as mock_get:
+        mock_get.return_value = _make_response(_fixture("efetch.xml"))
+        articles = ArticleParser.parse_all_details(client.fetch_details(["38860195"]))
+    first = articles[0]
+    assert first["title"] == (
+        "Drosophila melanogaster Laboratory Rearing for Wolbachia-Based Control "
+        "Programs, a Component of Dengue Control."
+    )
+    assert first["abstract"].startswith(
+        "BACKGROUND: Drosophila melanogaster flies are smooth, low upkeep and safe")
+    assert "requirements were provided for laboratory rearing of D. melanogaster." in first["abstract"]
+
+
+def test_fetch_details_raises_on_http_error(client):
+    response = _make_response("", status_code=500)
+    response.raise_for_status.side_effect = requests.HTTPError("500 Server Error")
+    with patch("requests.get", return_value=response):
+        with pytest.raises(requests.HTTPError):
+            client.fetch_details(["123"])
