@@ -76,11 +76,14 @@ smolagents joke-agent demo), `demo.py`, `setup.py`, `requirements*.txt`,
 
 Each branch is based on the previous one.
 
-- `kiren-1`: import, the fixes above, `pubmed_tools/tests/fixtures/efetch.xml` (three real efetch
-  records, `PubmedData` trimmed), this file.
-- `kiren-2`: installable package: PEP 621 metadata with the font as package data, a
-  `kiren` command replacing `examples/basic_usage.py` with `--out DIR` (default
-  `./outputs`, nothing created at import), `uv.lock`, ruff.
+- `kiren-1` (done): import, the fixes above, `pubmed_tools/tests/fixtures/efetch.xml`
+  (three real efetch records, `PubmedData` trimmed), this file.
+- `kiren-2` (done): installable package. PEP 621 metadata (distribution `kiren`, import
+  name still `pubmed_tools`) with the font as package data, checked in a built wheel on
+  Python 3.10; `setup.py` and `requirements*.txt` removed. A `kiren` command replaces
+  `examples/basic_usage.py`, adds `--out DIR` (default `./outputs`, nothing created at
+  import) and exits 1 when PubMed or an export fails. Tests move to `tests/`. `uv.lock`
+  (pandas 2.3.3 on 3.10, 3.1.1 on 3.11+), ruff format and lint.
 - `kiren-3`: tests against a fake E-utilities HTTP server serving recorded XML;
   `PubMedClient(base_url=..., api_key=..., email=...)` with `NCBI_API_KEY`/`NCBI_EMAIL`
   from the environment; GitHub Actions on Python 3.10-3.14.
@@ -100,7 +103,8 @@ git format-patch --relative=kiren "$base"..origin/kiren-1 -o /tmp/kiren-1
 git clone https://github.com/TanGentleman/kiren && cd kiren
 git am /tmp/kiren-1/*.patch
 python3 -m venv .venv && .venv/bin/pip install -e . pytest pytest-cov pypdf
-.venv/bin/python -m pytest -q
+.venv/bin/python -m pytest -q        # kiren-1
+uv sync --locked && uv run pytest    # kiren-2 and later
 ```
 
 For a later branch use the same `$base` and `origin/kiren-N` to get the whole stack, or
