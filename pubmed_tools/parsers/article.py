@@ -16,9 +16,11 @@ class ArticleParser:
 
         parsed_authors = []
         for author in authors:
-            author_info = f"{author.get('ForeName', '')} {author.get('LastName', '')}".strip(
-            )
-            parsed_authors.append(author_info)
+            author_info = f"{author.get('ForeName', '')} {author.get('LastName', '')}".strip()
+            if not author_info:
+                author_info = ArticleParser._parse_formatted_text(author.get('CollectiveName', ''))
+            if author_info:
+                parsed_authors.append(author_info)
 
         return parsed_authors
 
@@ -82,7 +84,9 @@ class ArticleParser:
             return None
 
         article = detail['MedlineCitation'].get('Article', {})
-        pmid = detail['MedlineCitation'].get('PMID', {}).get('#text', '')
+        pmid = detail['MedlineCitation'].get('PMID', '')
+        if isinstance(pmid, dict):
+            pmid = pmid.get('#text', '')
 
         pub_date = cls._extract_publication_date(article)
         if convert_date:
@@ -123,5 +127,5 @@ class ArticleParser:
     @classmethod
     def parse_all_details(cls, details: List[dict]) -> List[ArticleDetails]:
         """Parse all articles in the details list."""
-        return [cls.parse_article_details(detail)
-                for detail in details if detail]
+        parsed = (cls.parse_article_details(detail) for detail in details if detail)
+        return [article for article in parsed if article]

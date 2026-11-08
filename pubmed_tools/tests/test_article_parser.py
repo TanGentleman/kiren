@@ -87,3 +87,24 @@ def test_parse_article_details(parser):
     assert result['pmid'] == '12345'
     assert result['publication_date'] == {
         'year': '2023', 'month': '01', 'day': '01'}
+
+
+def test_parse_authors_collective_name():
+    author_data = {
+        'Author': [
+            {'ForeName': 'John', 'LastName': 'Doe'},
+            {'CollectiveName': 'Tree of Life Core Informatics collective'},
+        ]
+    }
+    assert ArticleParser.parse_authors(author_data) == [
+        'John Doe', 'Tree of Life Core Informatics collective']
+
+
+def test_parse_article_details_pmid_without_attributes():
+    detail = {'MedlineCitation': {'PMID': '123', 'Article': {'ArticleTitle': 'T'}}}
+    assert ArticleParser.parse_article_details(detail)['pmid'] == '123'
+
+
+def test_parse_all_details_skips_unparseable_records():
+    details = [{'BookDocument': {}}, {'MedlineCitation': {'PMID': '1', 'Article': {}}}]
+    assert [a['pmid'] for a in ArticleParser.parse_all_details(details)] == ['1']
