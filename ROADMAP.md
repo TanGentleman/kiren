@@ -61,7 +61,7 @@ numpy, changes Excel cell typing), a combined `kiren search|doi` command, Sci-Hu
 # in a kranti-sandbox clone: everything after the import commit
 git fetch origin
 base=$(git log -1 --format=%H --grep='^Import kiren upstream' origin/kiren-1)
-git format-patch --relative=kiren "$base"..origin/kiren-N -o /tmp/kiren
+git format-patch --relative=kiren "$base"..origin/kiren-6 -o /tmp/kiren
 # in a clean upstream clone at af1e1e4
 git clone https://github.com/TanGentleman/kiren && cd kiren
 git am /tmp/kiren/*.patch
