@@ -36,6 +36,15 @@ print(articles[0]["title"], articles[0]["authors"])
 CSVExporter().export(articles, "/tmp/chunking.csv")
 ```
 
+## Look up a paper by DOI
+
+```bash
+uv run kiren-doi https://doi.org/10.1093/scan/nsq093     # title, authors, keywords, citations, abstract as JSON
+uv sync --extra web && uv run kiren-web                    # the same lookup as a web page on http://127.0.0.1:8000
+```
+
+This uses [OpenAlex](https://openalex.org), which also needs no account.
+
 ## Settings
 
 | Variable | Default | Purpose |
@@ -44,16 +53,14 @@ CSVExporter().export(articles, "/tmp/chunking.csv")
 | `NCBI_EMAIL` | none | Sent to NCBI so they can contact you about heavy use |
 | `PUBMED_TOOLS_OUTPUT_DIR` | `outputs` | Where relative export filenames go |
 | `KIREN_EUTILS_URL` | NCBI | E-utilities base URL (the tests point it at a local fake) |
+| `KIREN_OPENALEX_URL` | `https://api.openalex.org` | OpenAlex base URL for `kiren-doi` |
+| `PORT`, `KIREN_HOST` | `8000`, `127.0.0.1` | Where `kiren-web` listens |
 
 ## Development
 
 ```bash
 uv sync --locked
-uv run pytest                # offline: a local fake E-utilities server replays tests/fixtures
+uv run pytest                # offline: local fake NCBI and OpenAlex servers replay tests/fixtures
 uv run ruff check . && uv run ruff format --check .
 tests/fixtures/record.sh     # re-record the fixtures from NCBI (needs network)
 ```
-
-`abstracts.py` and `kiren-api.py` are a separate DOI lookup through OpenAlex
-(`pip install pyalex typing_extensions fastapi uvicorn`, then `python abstracts.py --url
-https://doi.org/10.1093/scan/nsq093`).

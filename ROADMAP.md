@@ -96,9 +96,22 @@ Each branch is based on the previous one.
 - `kiren-4` (done): cut both notebooks, `examples/demo.py`, `modal-abstracts.py`, the
   unused `SearchResult` and the parser's dead inline-markup branch; new README. Its
   shell and Python examples were run live against NCBI on 2026-11-08 (20 articles).
-- `kiren-5`: the OpenAlex DOI lookup moves into the package as `kiren doi <url>` (plain
-  requests, no pyalex), tested against a fake OpenAlex server; the web page becomes an
-  optional extra.
+- `kiren-5` (done): the OpenAlex DOI lookup moves into the package as `kiren-doi <url>`
+  (plain requests, no pyalex; live output identical to upstream `abstracts.py` for
+  10.1093/scan/nsq093) and `kiren-web` (optional `web` extra: fastapi, uvicorn) serving
+  the unchanged `static/index.html`. `abstracts.py`, `kiren-api.py` and `static/` are
+  gone. The page binds 127.0.0.1 instead of 0.0.0.0 and returns 404/502 instead of 500.
+  48 tests pass on Python 3.10, 3.11, 3.12, 3.13 and 3.14.
+
+Stopped here. Not done, because they are not high-confidence without Tan: replacing
+pandas with plain openpyxl (pandas is only used for the Excel export; it would drop
+pandas and numpy, but changes cell typing), a combined `kiren search|doi` command,
+Sci-Hub support (issue #5, legal question), and Modal deployment of the page.
+
+Size: upstream has 32 files, 1,382 lines of Python (tests included) and two notebooks
+(66 KB). `kiren-5` has 38 files: 872 lines of package Python and 569 lines of tests; the
+added files are tests, recorded fixtures, `uv.lock`, CI and this file. The cut is the
+notebooks, three duplicate scripts, `setup.py` and both requirements files.
 
 ## Apply a branch upstream
 
@@ -120,9 +133,15 @@ For a later branch use the same `$base` and `origin/kiren-N` to get the whole st
 
 ## Needs Tan
 
-- Nothing here touches the live NCBI or OpenAlex services in tests. A real NCBI API key
-  (free, from an NCBI account) is only needed for more than 3 requests/s.
-- Product call: keep the DOI web page and its Modal deployment? Deploying needs your
-  Modal account; the stack only keeps the page runnable locally.
-- `fetch_details` now raises on HTTP errors instead of returning `[]`; callers that
-  relied on the silent empty list will see the exception.
+- License: upstream has none, so `pyproject.toml` declares none. Pick one before
+  publishing.
+- Naming: the distribution is now `kiren` (commands `kiren`, `kiren-doi`, `kiren-web`)
+  while the import name stays `pubmed_tools`, so existing code keeps working. Renaming
+  the import package is a breaking change and not done.
+- Behavior changes to accept: `fetch_details` raises on HTTP errors instead of returning
+  `[]`; CSV/Excel cells and dates are plain text (`A; B`, `2023-09`); `kiren-web` listens
+  on 127.0.0.1 by default (set `KIREN_HOST=0.0.0.0` to expose it like upstream did).
+- Live services: tests never touch NCBI or OpenAlex. A free NCBI API key (NCBI account)
+  is only needed above 3 requests/s. Deploying the page (upstream's Modal app) needs your
+  Modal account; the stack keeps it local only.
+- Not done on purpose: dropping pandas for openpyxl, Sci-Hub support (issue #5).
