@@ -103,3 +103,19 @@ def test_csv_and_excel_write_plain_text_cells(sample_data, temp_dir):
     for df in (pd.read_csv(csv_path, dtype=str), pd.read_excel(xlsx_path, dtype=str)):
         assert df['authors'].tolist() == ['John Doe; Jane Smith', 'Bob Johnson']
         assert df['publication_date'].tolist() == ['2023-01-01', '2023-02-02']
+
+
+def test_pdf_keeps_angle_brackets_and_ampersands(temp_dir):
+    pypdf = pytest.importorskip("pypdf")
+    filename = os.path.join(temp_dir, 'markup.pdf')
+    article = {
+        'title': 'IL-6 & TNF',
+        'abstract': 'x<y and y>z<w, <NaN> and a <b>bold',
+        'authors': ['A B'],
+        'publication_date': {'year': '2023', 'month': '01', 'day': '01'},
+        'pmid': '1',
+    }
+    PDFExporter().export([article], filename)
+    text = pypdf.PdfReader(filename).pages[0].extract_text()
+    assert 'IL-6 & TNF' in text
+    assert 'x<y and y>z<w, <NaN> and a <b>bold' in text

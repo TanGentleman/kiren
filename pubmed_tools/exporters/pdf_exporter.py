@@ -1,5 +1,6 @@
 from typing import List, Optional, Dict
 import logging
+from xml.sax.saxutils import escape
 from reportlab.lib.pagesizes import letter
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, PageBreak
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
@@ -44,11 +45,10 @@ class PDFExporter(BaseExporter):
         return styles
     
     def _sanitize_text(self, text: str) -> str:
-        """Sanitize and prepare text for PDF export."""
+        """Escape text so reportlab doesn't read '<' or '&' as paragraph markup."""
         if not text:
             return ""
-        # The font change should handle the previously problematic characters
-        return text
+        return escape(text)
     
     def export(self, 
                data: List[ArticleDetails], 
