@@ -45,3 +45,9 @@ def test_cli_exits_nonzero_when_pubmed_fails(eutils, tmp_path):
     eutils.fail_with = 503
     assert _run([RECORDED_TERM, "--csv", "--out", str(tmp_path)]) == 1
     assert os.listdir(tmp_path) == []
+
+
+def test_cli_exits_1_when_an_export_fails(eutils, tmp_path):
+    not_a_dir = tmp_path / "file"
+    not_a_dir.write_text("")
+    assert _run([RECORDED_TERM, "--csv", "--out", str(not_a_dir)]) == 1

@@ -1,4 +1,5 @@
 import json
+import socket
 
 import pytest
 
@@ -44,3 +45,14 @@ def test_kiren_doi_exits_1_when_not_found(fake_openalex, capsys):
         openalex.run(["https://doi.org/10.0000/does-not-exist"])
     assert exit_info.value.code == 1
     assert "no work" in capsys.readouterr().err
+
+
+def test_kiren_doi_exits_1_when_openalex_is_unreachable(monkeypatch, capsys):
+    with socket.socket() as sock:
+        sock.bind(("127.0.0.1", 0))
+        closed = f"http://127.0.0.1:{sock.getsockname()[1]}"
+    monkeypatch.setenv("KIREN_OPENALEX_URL", closed)
+    with pytest.raises(SystemExit) as exit_info:
+        openalex.run([DOI_URL])
+    assert exit_info.value.code == 1
+    assert capsys.readouterr().err.startswith("kiren-doi: ")
