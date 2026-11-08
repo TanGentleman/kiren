@@ -71,3 +71,9 @@ def test_fetch_details(client):
         args, kwargs = mock_get.call_args
         assert "efetch.fcgi" in args[0]
         assert "123,456" in kwargs["params"]["id"]
+
+
+def test_core_star_import():
+    namespace = {}
+    exec("from pubmed_tools.core import *", namespace)
+    assert "PubMedClient" in namespace
