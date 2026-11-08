@@ -78,3 +78,33 @@ def fake_eutils():
     yield f"http://127.0.0.1:{server.server_port}/entrez/eutils/", state
     server.shutdown()
     server.server_close()
+
+
+@pytest.fixture
+def fake_openalex(monkeypatch):
+    """Serves fixtures/openalex-work.json for the recorded DOI and 404 for anything else."""
+    requests_seen: list[str] = []
+    recorded_path = "/works/https://doi.org/10.1093/scan/nsq093"
+
+    class Handler(BaseHTTPRequestHandler):
+        def do_GET(self):
+            requests_seen.append(self.path)
+            if self.path == recorded_path:
+                status, body = 200, fixture_bytes("openalex-work.json")
+            else:
+                status, body = 404, b"<title>404 Not Found</title>"
+            self.send_response(status)
+            self.send_header("Content-Type", "application/json")
+            self.send_header("Content-Length", str(len(body)))
+            self.end_headers()
+            self.wfile.write(body)
+
+        def log_message(self, *args):
+            pass
+
+    server = ThreadingHTTPServer(("127.0.0.1", 0), Handler)
+    threading.Thread(target=server.serve_forever, args=(0.05,), daemon=True).start()
+    monkeypatch.setenv("KIREN_OPENALEX_URL", f"http://127.0.0.1:{server.server_port}")
+    yield requests_seen
+    server.shutdown()
+    server.server_close()

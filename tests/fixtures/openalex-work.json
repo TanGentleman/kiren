@@ -1,0 +1,659 @@
+{
+ "id": "https://openalex.org/W2095804568",
+ "doi": "https://doi.org/10.1093/scan/nsq093",
+ "title": "Neural substrates underlying intentional empathy",
+ "display_name": "Neural substrates underlying intentional empathy",
+ "publication_year": 2011,
+ "publication_date": "2011-04-21",
+ "authorships": [
+  {
+   "author": {
+    "id": "https://openalex.org/A5076834238",
+    "display_name": "Moritz de Greck"
+   }
+  },
+  {
+   "author": {
+    "id": "https://openalex.org/A5100367305",
+    "display_name": "Gang Wang"
+   }
+  },
+  {
+   "author": {
+    "id": "https://openalex.org/A5103531524",
+    "display_name": "Xuedong Yang"
+   }
+  },
+  {
+   "author": {
+    "id": "https://openalex.org/A5100364282",
+    "display_name": "Xiaoying Wang"
+   }
+  },
+  {
+   "author": {
+    "id": "https://openalex.org/A5076033503",
+    "display_name": "Georg Northoff"
+   }
+  },
+  {
+   "author": {
+    "id": "https://openalex.org/A5048496931",
+    "display_name": "Shihui Han"
+   }
+  }
+ ],
+ "keywords": [
+  {
+   "id": "https://openalex.org/keywords/inferior-frontal-cortex",
+   "display_name": "inferior frontal cortex",
+   "score": 0.6800000071525574
+  },
+  {
+   "id": "https://openalex.org/keywords/middle-temporal-gyrus",
+   "display_name": "middle temporal gyrus",
+   "score": 0.949999988079071
+  },
+  {
+   "id": "https://openalex.org/keywords/anterior-cingulate-cortex",
+   "display_name": "anterior cingulate cortex",
+   "score": 0.925000011920929
+  },
+  {
+   "id": "https://openalex.org/keywords/anterior-insula",
+   "display_name": "anterior insula",
+   "score": 0.9980000257492065
+  },
+  {
+   "id": "https://openalex.org/keywords/facial-emotion-recognition",
+   "display_name": "facial emotion recognition",
+   "score": 0.5350000262260437
+  },
+  {
+   "id": "https://openalex.org/keywords/anger",
+   "display_name": "anger",
+   "score": 0.3499999940395355
+  },
+  {
+   "id": "https://openalex.org/keywords/familiarity",
+   "display_name": "familiarity",
+   "score": 0.32600000500679016
+  },
+  {
+   "id": "https://openalex.org/keywords/social-cognition",
+   "display_name": "social cognition",
+   "score": 0.3659999966621399
+  }
+ ],
+ "concepts": [
+  {
+   "id": "https://openalex.org/C2779885105",
+   "wikidata": "https://www.wikidata.org/wiki/Q182263",
+   "display_name": "Empathy",
+   "level": 2,
+   "score": 0.9506237506866455
+  },
+  {
+   "id": "https://openalex.org/C15744967",
+   "wikidata": "https://www.wikidata.org/wiki/Q9418",
+   "display_name": "Psychology",
+   "level": 0,
+   "score": 0.8245604634284973
+  },
+  {
+   "id": "https://openalex.org/C2781423396",
+   "wikidata": "https://www.wikidata.org/wiki/Q1558534",
+   "display_name": "Inferior frontal gyrus",
+   "level": 3,
+   "score": 0.6810410022735596
+  },
+  {
+   "id": "https://openalex.org/C2778402161",
+   "wikidata": "https://www.wikidata.org/wiki/Q2121931",
+   "display_name": "Anterior cingulate cortex",
+   "level": 3,
+   "score": 0.6157746911048889
+  },
+  {
+   "id": "https://openalex.org/C104996578",
+   "wikidata": "https://www.wikidata.org/wiki/Q827617",
+   "display_name": "Insula",
+   "level": 2,
+   "score": 0.5388147234916687
+  },
+  {
+   "id": "https://openalex.org/C2780539906",
+   "wikidata": "https://www.wikidata.org/wiki/Q1422654",
+   "display_name": "Insular cortex",
+   "level": 2,
+   "score": 0.46418848633766174
+  },
+  {
+   "id": "https://openalex.org/C2781210436",
+   "wikidata": "https://www.wikidata.org/wiki/Q1892702",
+   "display_name": "Cingulate cortex",
+   "level": 3,
+   "score": 0.45571067929267883
+  },
+  {
+   "id": "https://openalex.org/C2780200011",
+   "wikidata": "https://www.wikidata.org/wiki/Q7317081",
+   "display_name": "Retrosplenial cortex",
+   "level": 3,
+   "score": 0.4494752287864685
+  },
+  {
+   "id": "https://openalex.org/C169760540",
+   "wikidata": "https://www.wikidata.org/wiki/Q207011",
+   "display_name": "Neuroscience",
+   "level": 1,
+   "score": 0.439777672290802
+  },
+  {
+   "id": "https://openalex.org/C180747234",
+   "wikidata": "https://www.wikidata.org/wiki/Q23373",
+   "display_name": "Cognitive psychology",
+   "level": 1,
+   "score": 0.4284038841724396
+  },
+  {
+   "id": "https://openalex.org/C2777348757",
+   "wikidata": "https://www.wikidata.org/wiki/Q2346577",
+   "display_name": "Cortex (anatomy)",
+   "level": 2,
+   "score": 0.34316331148147583
+  },
+  {
+   "id": "https://openalex.org/C2779226451",
+   "wikidata": "https://www.wikidata.org/wiki/Q903809",
+   "display_name": "Functional magnetic resonance imaging",
+   "level": 2,
+   "score": 0.33508989214897156
+  },
+  {
+   "id": "https://openalex.org/C169900460",
+   "wikidata": "https://www.wikidata.org/wiki/Q2200417",
+   "display_name": "Cognition",
+   "level": 2,
+   "score": 0.3184627890586853
+  },
+  {
+   "id": "https://openalex.org/C529278444",
+   "wikidata": "https://www.wikidata.org/wiki/Q47273",
+   "display_name": "Central nervous system",
+   "level": 2,
+   "score": 0.1219242513179779
+  },
+  {
+   "id": "https://openalex.org/C77805123",
+   "wikidata": "https://www.wikidata.org/wiki/Q161272",
+   "display_name": "Social psychology",
+   "level": 1,
+   "score": 0.1061837375164032
+  }
+ ],
+ "cited_by_count": 76,
+ "abstract_inverted_index": {
+  "Although": [
+   0
+  ],
+  "empathic": [
+   1,
+   46
+  ],
+  "responses": [
+   2,
+   145
+  ],
+  "to": [
+   3,
+   14,
+   67,
+   98
+  ],
+  "stimuli": [
+   4,
+   91
+  ],
+  "with": [
+   5,
+   17
+  ],
+  "emotional": [
+   6,
+   32,
+   71
+  ],
+  "contents": [
+   7
+  ],
+  "may": [
+   8
+  ],
+  "occur": [
+   9
+  ],
+  "automatically,": [
+   10
+  ],
+  "humans": [
+   11
+  ],
+  "are": [
+   12
+  ],
+  "capable": [
+   13
+  ],
+  "intentionally": [
+   15,
+   44
+  ],
+  "empathize": [
+   16
+  ],
+  "other": [
+   18
+  ],
+  "individuals.": [
+   19
+  ],
+  "Intentional": [
+   20
+  ],
+  "empathy": [
+   21,
+   103,
+   110,
+   129,
+   187
+  ],
+  "for": [
+   22
+  ],
+  "others": [
+   23
+  ],
+  "is": [
+   24,
+   36
+  ],
+  "even": [
+   25
+  ],
+  "possible": [
+   26
+  ],
+  "when": [
+   27,
+   64
+  ],
+  "they": [
+   28,
+   65
+  ],
+  "do": [
+   29
+  ],
+  "not": [
+   30,
+   165
+  ],
+  "show": [
+   31
+  ],
+  "expressions.": [
+   33
+  ],
+  "However,": [
+   34
+  ],
+  "little": [
+   35
+  ],
+  "known": [
+   37
+  ],
+  "about": [
+   38
+  ],
+  "the": [
+   39,
+   50,
+   70,
+   89,
+   102,
+   113,
+   138,
+   154,
+   174,
+   177,
+   182
+  ],
+  "neuronal": [
+   40,
+   51
+  ],
+  "mechanisms": [
+   41
+  ],
+  "of": [
+   42,
+   73,
+   78,
+   88,
+   108,
+   127,
+   148,
+   173,
+   176
+  ],
+  "this": [
+   43
+  ],
+  "controlled": [
+   45
+  ],
+  "process.": [
+   47
+  ],
+  "To": [
+   48
+  ],
+  "investigate": [
+   49
+  ],
+  "substrates": [
+   52
+  ],
+  "underlying": [
+   53
+  ],
+  "intentional": [
+   54,
+   128,
+   193
+  ],
+  "empathy,": [
+   55
+  ],
+  "we": [
+   56
+  ],
+  "scanned": [
+   57
+  ],
+  "20": [
+   58
+  ],
+  "healthy": [
+   59
+  ],
+  "Chinese": [
+   60
+  ],
+  "subjects,": [
+   61
+  ],
+  "using": [
+   62
+  ],
+  "fMRI,": [
+   63
+  ],
+  "tried": [
+   66
+  ],
+  "feel": [
+   68
+  ],
+  "inside": [
+   69
+  ],
+  "states": [
+   72
+  ],
+  "neutral": [
+   74
+  ],
+  "or": [
+   75
+  ],
+  "angry": [
+   76
+  ],
+  "faces": [
+   77
+  ],
+  "familiar": [
+   79
+  ],
+  "(Asian)": [
+   80
+  ],
+  "and": [
+   81,
+   121,
+   151,
+   153,
+   181
+  ],
+  "unfamiliar": [
+   82
+  ],
+  "(Caucasian)": [
+   83
+  ],
+  "models.": [
+   84
+  ],
+  "Skin": [
+   85
+  ],
+  "color": [
+   86,
+   132
+  ],
+  "evaluation": [
+   87
+  ],
+  "same": [
+   90
+  ],
+  "served": [
+   92
+  ],
+  "as": [
+   93
+  ],
+  "a": [
+   94,
+   99,
+   106
+  ],
+  "control": [
+   95
+  ],
+  "task.": [
+   96
+  ],
+  "Compared": [
+   97
+  ],
+  "baseline": [
+   100
+  ],
+  "condition,": [
+   101
+  ],
+  "task": [
+   104
+  ],
+  "revealed": [
+   105,
+   135
+  ],
+  "network": [
+   107
+  ],
+  "established": [
+   109
+  ],
+  "regions,": [
+   111
+  ],
+  "including": [
+   112
+  ],
+  "anterior": [
+   114,
+   123
+  ],
+  "cingulate": [
+   115
+  ],
+  "cortex,": [
+   116,
+   142
+  ],
+  "bilateral": [
+   117,
+   122,
+   139
+  ],
+  "inferior": [
+   118,
+   140,
+   178
+  ],
+  "frontal": [
+   119,
+   141,
+   179
+  ],
+  "cortex": [
+   120,
+   180
+  ],
+  "insula.": [
+   124
+  ],
+  "The": [
+   125
+  ],
+  "contrast": [
+   126
+  ],
+  "vs": [
+   130
+  ],
+  "skin": [
+   131
+  ],
+  "evaluation,": [
+   133
+  ],
+  "however,": [
+   134
+  ],
+  "three": [
+   136
+  ],
+  "regions:": [
+   137
+  ],
+  "whose": [
+   143,
+   158
+  ],
+  "hemodynamic": [
+   144
+  ],
+  "were": [
+   146
+  ],
+  "independent": [
+   147
+  ],
+  "perceived": [
+   149
+  ],
+  "emotion": [
+   150,
+   163
+  ],
+  "familiarity": [
+   152
+  ],
+  "right-middle": [
+   155
+  ],
+  "temporal": [
+   156,
+   184
+  ],
+  "gyrus,": [
+   157
+  ],
+  "activity": [
+   159
+  ],
+  "was": [
+   160
+  ],
+  "modulated": [
+   161
+  ],
+  "by": [
+   162,
+   166,
+   188
+  ],
+  "but": [
+   164
+  ],
+  "familiarity.": [
+   167
+  ],
+  "These": [
+   168
+  ],
+  "findings": [
+   169
+  ],
+  "extend": [
+   170
+  ],
+  "our": [
+   171
+  ],
+  "understanding": [
+   172
+  ],
+  "role": [
+   175
+  ],
+  "middle": [
+   183
+  ],
+  "gyrus": [
+   185
+  ],
+  "in": [
+   186,
+   192
+  ],
+  "demonstrating": [
+   189
+  ],
+  "their": [
+   190
+  ],
+  "involvement": [
+   191
+  ],
+  "empathy.": [
+   194
+  ]
+ }
+}
