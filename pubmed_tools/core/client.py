@@ -19,6 +19,7 @@ Example:
     articles = ArticleParser.parse_all_details(articles_raw)
 """
 
+import os
 import xml.etree.ElementTree as ET
 from typing import Any
 
@@ -45,9 +46,38 @@ def flatten_inline_markup(content: bytes) -> bytes:
     return ET.tostring(root, encoding="utf-8")
 
 
+NCBI_EUTILS_URL = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/"
+
+
 class PubMedClient:
-    def __init__(self):
-        self.base_url = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/"
+    """E-utilities client.
+
+    `base_url` defaults to $KIREN_EUTILS_URL or NCBI. `api_key` and `email` default to
+    $NCBI_API_KEY and $NCBI_EMAIL; NCBI allows 3 requests/s without a key, 10 with one.
+    """
+
+    def __init__(
+        self,
+        base_url: str | None = None,
+        api_key: str | None = None,
+        email: str | None = None,
+        tool: str = "kiren",
+    ):
+        base_url = base_url or os.getenv("KIREN_EUTILS_URL") or NCBI_EUTILS_URL
+        self.base_url = base_url.rstrip("/") + "/"
+        self.api_key = api_key or os.getenv("NCBI_API_KEY")
+        self.email = email or os.getenv("NCBI_EMAIL")
+        self.tool = tool
+
+    def _get(self, eutil: str, params: dict[str, Any]) -> bytes:
+        params = {**params, "tool": self.tool}
+        if self.email:
+            params["email"] = self.email
+        if self.api_key:
+            params["api_key"] = self.api_key
+        response = requests.get(f"{self.base_url}{eutil}", params=params, timeout=TIMEOUT_SECONDS)
+        response.raise_for_status()
+        return response.content
 
     def search(self, query: str, use_history: bool = False, retmax: int = 100) -> dict[str, Any]:
         """Search PubMed and return results.
@@ -69,11 +99,9 @@ class PubMedClient:
             "retmode": "xml",
             "retmax": retmax,
         }
-        response = requests.get(f"{self.base_url}{eutil}", params=params, timeout=TIMEOUT_SECONDS)
-        response.raise_for_status()
-        xml = xmltodict.parse(response.content)
+        xml = xmltodict.parse(self._get(eutil, params))
         result = xml.get("eSearchResult", {})
-        id_list = result.get("IdList", {}).get("Id", [])
+        id_list = (result.get("IdList") or {}).get("Id", [])
         if isinstance(id_list, str):
             id_list = [id_list]
         elif not isinstance(id_list, list):
@@ -119,10 +147,8 @@ class PubMedClient:
         else:
             params["WebEnv"] = webenv
             params["query_key"] = query_key
-        response = requests.get(f"{self.base_url}{eutil}", params=params, timeout=TIMEOUT_SECONDS)
-        response.raise_for_status()
-        xml_dict = xmltodict.parse(flatten_inline_markup(response.content))
-        data = xml_dict.get("PubmedArticleSet", {})
+        xml_dict = xmltodict.parse(flatten_inline_markup(self._get(eutil, params)))
+        data = xml_dict.get("PubmedArticleSet") or {}
         articles = data.get("PubmedArticle", [])
         if not articles:
             return []

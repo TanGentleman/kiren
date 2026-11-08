@@ -1,0 +1,3 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE eSearchResult PUBLIC "-//NLM//DTD esearch 20060628//EN" "https://eutils.ncbi.nlm.nih.gov/eutils/dtd/20060628/esearch.dtd">
+<eSearchResult><Count>0</Count><RetMax>0</RetMax><RetStart>0</RetStart><QueryKey>1</QueryKey><WebEnv>MCID_6af006c0b8b296a635097355</WebEnv><IdList/><TranslationSet/><QueryTranslation>zzxqvnonexistentterm123</QueryTranslation><WarningList><QuotedPhraseNotFound>"zzxqvnonexistentterm123"</QuotedPhraseNotFound><OutputMessage>No items found.</OutputMessage></WarningList></eSearchResult>
