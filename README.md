@@ -1,44 +1,13 @@
-# PubMed Tools
+# kiren
 
-A Python SDK for interacting with PubMed's API, with support for searching, parsing, and exporting research articles.
+Searches PubMed and saves the matching articles as CSV, Excel or PDF, or looks up one paper by
+DOI. Needs network (NCBI, OpenAlex), no account.
 
-## Features
-
-- 🔍 **Search**: Easy-to-use interface for searching PubMed articles
-- 📑 **Parse**: Extract structured data from PubMed articles including titles, abstracts, authors, and dates
-- 📤 **Export**: Export results to multiple formats (CSV, Excel, PDF)
-- 🧪 **Well-tested**: 94% test coverage with pytest
-- 📚 **Type hints**: Full typing support for better IDE integration
-
-## Installation
-1. Clone the repository:
 ```bash
-git clone https://github.com/TanGentleman/kiren.git
+git clone https://github.com/TanGentleman/kiren && cd kiren
+uv sync --locked
+uv run kiren "chunking memory" --csv --max-results 20   # writes outputs/output.csv
 ```
 
-2. Install the dependencies:
-```bash
-pip install -e .
-```
-
-## Usage
-```bash
-python pubmed_tools/examples/basic_usage.py
-```
-
-## All-in-one (Python 3.11)
-```bash
-git clone https://github.com/TanGentleman/kiren.git
-cd kiren
-python3 -m venv .venv
-source .venv/bin/activate
-pip install -e .
-python3 pubmed_tools/examples/basic_usage.py
-```
-
-## Running after setup
-```bash
-cd kiren
-source .venv/bin/activate
-python3 pubmed_tools/examples/basic_usage.py "Perceptual Organization AND cerebral trauma" --pdf --csv
-```
+Needs [uv](https://docs.astral.sh/uv/) 0.13+, which installs Python 3.11+ if needed. Details:
+[IMPLEMENTATION.md](IMPLEMENTATION.md), [ROADMAP.md](ROADMAP.md).

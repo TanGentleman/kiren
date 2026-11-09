@@ -1,23 +1,55 @@
 [build-system]
-requires = ["setuptools", "wheel"]
+requires = ["setuptools>=84.2.1"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "pubmed_tools"
-version = "0.1.0"
-description = "A Python SDK for interacting with PubMed's API"
-authors = [
-    { name = "TanGentleman", email = "tanuj@cmu.edu" }
-]
+name = "kiren"
+version = "0.2.0"
+description = "Search PubMed, export articles to CSV, Excel or PDF, and look up papers by DOI"
+readme = "README.md"
+authors = [{ name = "TanGentleman", email = "tanuj@cmu.edu" }]
+requires-python = ">=3.11"
 dependencies = [
-    "requests",
-    "xmltodict",
-    "pandas",
-    "reportlab"
+    "requests>=2.34.2",
+    "xmltodict>=1.0.4",
+    "pandas>=3.1.1",
+    "openpyxl>=3.1.5",
+    "reportlab>=5.1.0",
 ]
-requires-python = ">=3.7"
+
+[project.optional-dependencies]
+web = ["fastapi>=0.162.2", "uvicorn>=0.54.0"]
+
+[project.scripts]
+kiren = "pubmed_tools.cli:run"
+kiren-doi = "pubmed_tools.openalex:run"
+kiren-web = "pubmed_tools.web:run"
+
+[dependency-groups]
+dev = [
+    "pytest==9.2.0",
+    "pytest-cov==7.1.0",
+    "pypdf==7.0.0",
+    "ruff==0.17.4",
+    "fastapi==0.162.2",
+    "httpx2==2.16.0",
+    "uvicorn==0.54.0",
+]
+
+[tool.setuptools.packages.find]
+include = ["pubmed_tools*"]
+
+[tool.setuptools.package-data]
+pubmed_tools = ["fonts/*.ttf", "static/*.html"]
 
 [tool.pytest.ini_options]
-testpaths = ["pubmed_tools/tests"]
-python_files = ["test_*.py"]
-addopts = "--cov=pubmed_tools --cov-report=term-missing" 
+testpaths = ["tests"]
+addopts = "--cov=pubmed_tools --cov-report=term-missing"
+filterwarnings = ["error"]
+
+[tool.ruff]
+line-length = 100
+extend-exclude = ["*.ipynb"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]

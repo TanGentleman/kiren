@@ -1,4 +1,4 @@
-from typing import TypedDict, List, Union
+from typing import TypedDict
 
 
 class ArticleDetails(TypedDict):
@@ -12,16 +12,9 @@ class ArticleDetails(TypedDict):
         authors: List of author names as strings
         abstract: Full abstract text as string
     """
+
     title: str
-    publication_date: Union[str, dict]
+    publication_date: str | dict
     pmid: str
-    authors: List[str]
+    authors: list[str]
     abstract: str
-
-
-class SearchResult(TypedDict):
-    """Schema for PubMed search results."""
-    id_list: List[str]
-    count: str
-    webenv: str
-    query_key: str
