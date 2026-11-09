@@ -56,21 +56,6 @@ Not done, because they need Tan: replacing pandas with plain openpyxl (drops pan
 numpy, changes Excel cell typing), a combined `kiren search|doi` command, Sci-Hub support
 (issue #5, legal question), and a hosted deployment of the page.
 
-## Apply a branch upstream
-
-```bash
-# in a kranti-sandbox clone: everything after the import commit
-git fetch origin
-base=$(git log -1 --format=%H --grep='^Import kiren upstream' origin/kiren-1)
-git format-patch --relative=kiren "$base"..origin/kiren-7 -o /tmp/kiren
-# in a clean upstream clone at af1e1e4
-git clone https://github.com/TanGentleman/kiren && cd kiren
-git am /tmp/kiren/*.patch
-uv sync --locked && uv run pytest    # kiren-2 and later
-```
-
-`origin/kiren-(N-1)..origin/kiren-N` applies one branch on top of the previous.
-
 ## Needs Tan
 
 - License: upstream has none, so `pyproject.toml` declares none. Pick one before
